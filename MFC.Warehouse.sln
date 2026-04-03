@@ -1,0 +1,117 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36221.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Warehouse.UI", "Warehouse.UI\", "{A2BE1170-CDD3-4372-9AA1-7954F5390E84}"
+	ProjectSection(WebsiteProperties) = preProject
+		SccProjectName = "SAK"
+		SccAuxPath = "SAK"
+		SccLocalPath = "SAK"
+		SccProvider = "SAK"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.8"
+		ProjectReferences = "{C1897BA4-044E-41E8-BD8C-0BCF8649BA02}|MFC.Factory.dll;{07FD9DD5-2E70-4A20-94AA-70DE1DB8AAD8}|MFC.DataAccess.dll;{0C71B969-17D3-4ED8-BAE8-B1698D8052DC}|MFC.Reference.dll;{DD49638F-034B-468F-8C07-010BFB381D3D}|MFC.Business.dll;{EB206951-5324-410C-B966-D2FBAAC51B44}|MFC.Interfacing.dll;{EE5E1832-CF0C-47BE-9A21-DC52651DF819}|MFC.Common.dll;"
+		Debug.AspNetCompiler.VirtualPath = "/Warehouse.UI"
+		Debug.AspNetCompiler.PhysicalPath = "Warehouse.UI\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\Warehouse.UI\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/Warehouse.UI"
+		Release.AspNetCompiler.PhysicalPath = "Warehouse.UI\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\Warehouse.UI\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "55884"
+		SlnRelativePath = "Warehouse.UI\"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MFC.Reference", "MFC.Reference\MFC.Reference.csproj", "{0C71B969-17D3-4ED8-BAE8-B1698D8052DC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MFC.Interfacing", "MFC.Interfacing\MFC.Interfacing.csproj", "{EB206951-5324-410C-B966-D2FBAAC51B44}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MFC.DataAccess", "MFC.DataAccess\MFC.DataAccess.csproj", "{07FD9DD5-2E70-4A20-94AA-70DE1DB8AAD8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MFC.Factory", "MFC.Factory\MFC.Factory.csproj", "{C1897BA4-044E-41E8-BD8C-0BCF8649BA02}"
+EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "MFC-Administrator", "MFC-Administrator\", "{9781BFA4-18FC-46D7-A568-7096FFD2035D}"
+	ProjectSection(WebsiteProperties) = preProject
+		SccProjectName = "SAK"
+		SccAuxPath = "SAK"
+		SccLocalPath = "SAK"
+		SccProvider = "SAK"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.8"
+		ProjectReferences = "{dd49638f-034b-468f-8c07-010bfb381d3d}|MFC.Business.dll;{07fd9dd5-2e70-4a20-94aa-70de1db8aad8}|MFC.DataAccess.dll;{c1897ba4-044e-41e8-bd8c-0bcf8649ba02}|MFC.Factory.dll;{eb206951-5324-410c-b966-d2fbaac51b44}|MFC.Interfacing.dll;{0c71b969-17d3-4ed8-bae8-b1698d8052dc}|MFC.Reference.dll;"
+		Debug.AspNetCompiler.VirtualPath = "/MFC-Administrator"
+		Debug.AspNetCompiler.PhysicalPath = "MFC-Administrator\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\MFC-Administrator\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/MFC-Administrator"
+		Release.AspNetCompiler.PhysicalPath = "MFC-Administrator\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\MFC-Administrator\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "57621"
+		VWDDynamicPort = "true"
+		SlnRelativePath = "MFC-Administrator\"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MFC.Business", "MFC.Business\MFC.Business.csproj", "{DD49638F-034B-468F-8C07-010BFB381D3D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MFC.Common", "MFC.Common\MFC.Common.csproj", "{EE5E1832-CF0C-47BE-9A21-DC52651DF819}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A2BE1170-CDD3-4372-9AA1-7954F5390E84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2BE1170-CDD3-4372-9AA1-7954F5390E84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2BE1170-CDD3-4372-9AA1-7954F5390E84}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2BE1170-CDD3-4372-9AA1-7954F5390E84}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{0C71B969-17D3-4ED8-BAE8-B1698D8052DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C71B969-17D3-4ED8-BAE8-B1698D8052DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C71B969-17D3-4ED8-BAE8-B1698D8052DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C71B969-17D3-4ED8-BAE8-B1698D8052DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB206951-5324-410C-B966-D2FBAAC51B44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB206951-5324-410C-B966-D2FBAAC51B44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB206951-5324-410C-B966-D2FBAAC51B44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB206951-5324-410C-B966-D2FBAAC51B44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07FD9DD5-2E70-4A20-94AA-70DE1DB8AAD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07FD9DD5-2E70-4A20-94AA-70DE1DB8AAD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07FD9DD5-2E70-4A20-94AA-70DE1DB8AAD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07FD9DD5-2E70-4A20-94AA-70DE1DB8AAD8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1897BA4-044E-41E8-BD8C-0BCF8649BA02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1897BA4-044E-41E8-BD8C-0BCF8649BA02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1897BA4-044E-41E8-BD8C-0BCF8649BA02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1897BA4-044E-41E8-BD8C-0BCF8649BA02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9781BFA4-18FC-46D7-A568-7096FFD2035D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9781BFA4-18FC-46D7-A568-7096FFD2035D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9781BFA4-18FC-46D7-A568-7096FFD2035D}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{9781BFA4-18FC-46D7-A568-7096FFD2035D}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{DD49638F-034B-468F-8C07-010BFB381D3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD49638F-034B-468F-8C07-010BFB381D3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD49638F-034B-468F-8C07-010BFB381D3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD49638F-034B-468F-8C07-010BFB381D3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE5E1832-CF0C-47BE-9A21-DC52651DF819}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE5E1832-CF0C-47BE-9A21-DC52651DF819}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE5E1832-CF0C-47BE-9A21-DC52651DF819}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE5E1832-CF0C-47BE-9A21-DC52651DF819}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.Common.6.0.1304.0\lib\NET45;packages\EnterpriseLibrary.Data.6.0.1304.0\lib\NET45
+		SolutionGuid = {B2BF20C5-3258-4A9C-A1A1-9961A7791828}
+	EndGlobalSection
+EndGlobal
