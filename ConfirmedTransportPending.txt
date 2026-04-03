@@ -1,0 +1,635 @@
+<%@ Page Title="WMS :: Manage Transport" Language="C#" MasterPageFile="~/WMS.master"
+    AutoEventWireup="true" CodeFile="ConfirmedTransportPending.aspx.cs" Inherits="Transactions_ConfirmedTransportPending" %>
+
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
+<%@ Register Src="../UserControls/TransportInnerMenu.ascx" TagName="TC" TagPrefix="uc6" %>
+<%@ Register Src="../UserControls/MessageBox.ascx" TagName="MessageBox" TagPrefix="uc1" %>
+<%@ Register Src="../UserControls/GoToPage.ascx" TagName="GoToPage" TagPrefix="uc3" %>
+<%@ Register Src="~/UserControls/DateControlwithoutValidator.ascx" TagName="DateControl"
+    TagPrefix="uc4" %>
+<asp:Content ID="ConData" ContentPlaceHolderID="MainContent" runat="Server">
+    <style type="text/css">
+        .WrapperDiv
+        {
+            height: 510px;
+            border: 0px sol id black;
+            border-bottom: 1px;
+            border-top: 0px;
+            padding: 0px;
+            border-bottom-color: lightGray;
+            padding-top: 0px;
+            margin-top: 0px;
+        }
+        .WrapperDiv TH
+        {
+            position: relative;
+        }
+        .WrapperDiv TR
+        {
+            /* Needed for IE */
+            height: 0px;
+        }
+        .WrapperDivInner
+        {
+            border: 0px solid black;
+            border-bottom: 1px;
+            border-top: 0px;
+            padding: 0px;
+            border-bottom-color: lightGray;
+            padding-top: 0px;
+            margin-top: 0px;
+        }
+        .WrapperDivInner TH
+        {
+            position: static !important;
+        }
+        .WrapperDivInner TR
+        {
+            height: 0px;
+        }
+        .STmodalBackground
+        {
+            background-color: #444444;
+            filter: alpha(opacity=50);
+            opacity: 0.5;
+            position: fixed;
+        }
+    </style>
+    <table align="center" width="100%">
+        <tr>
+            <td align="center">
+                <asp:UpdateProgress ID="progress_valid" runat="server" DynamicLayout="True" AssociatedUpdatePanelID="upPanel">
+                    <%--AssociatedUpdatePanelID="upPanel"--%>
+                    <ProgressTemplate>
+                        <div id="progressBackgroundFilter">
+                        </div>
+                        <div id="processMessage" style="z-index: 1000000">
+                            <br />
+                            <img alt="Please Wait ..." src="../Images/busy.gif" /><br />
+                            <br />
+                            <asp:Label ID="lbl_msg" Text="In Progress..Please Wait ..." runat="server" CssClass="specialdisplay"></asp:Label><br />
+                            <br />
+                        </div>
+                    </ProgressTemplate>
+                </asp:UpdateProgress>
+            </td>
+        </tr>
+    </table>
+    <asp:UpdatePanel ID="upPanel" runat="server">
+        <ContentTemplate>
+            <link href="../../css/styles.css" rel="stylesheet" type="text/css" />
+            <div id="Div1">
+                <div class="outer_forms">
+                    <span class="border_forms">
+                        <div class="heading1" style="color: #345A96; width: 968px">
+                            <asp:LinkButton ID="lbtBack" runat="server" CssClass="button" Text="Back" ForeColor="#345A96"
+                                Visible="false" Font-Bold="true" CausesValidation="false" OnClick="lbtBack_Click">
+                            </asp:LinkButton>
+                            <strong class="head_forms">
+                                <asp:Label ID="lblTitle" runat="server" Text="Manage Transport" Font-Size="10"></asp:Label>
+                            </strong>
+                        </div>
+                        <div class="clr">
+                        </div>
+                        <uc6:TC ID="InnerMenu" runat="server" />
+                        <div align="left" style="padding-bottom: 10px; padding-top: 20px">
+                            <table width="490px" style="margin-left: 0px">
+                                <tr>
+                                    <td>
+                                        <span class="text"><font style="color: red"></font>Voyage Type </span>
+                                    </td>
+                                    <td style="padding-left: 3px">
+                                        &nbsp;<asp:DropDownList ID="ddlShow" runat="server" Width="135px" AutoPostBack="true"
+                                            OnSelectedIndexChanged="ddlShow_SelectedChanged" TabIndex="1" Font-Names="Arial"
+                                            Font-Size="11px" BackColor="#F4F4F4">
+                                            <asp:ListItem Text="--SELECT--"></asp:ListItem>
+                                            <asp:ListItem Text="ALL" Value="0"></asp:ListItem>
+                                            <asp:ListItem Text="CONSOLIDATION" Value="1"></asp:ListItem>
+                                            <asp:ListItem Text="DEDICATED" Value="2"></asp:ListItem>
+                                        </asp:DropDownList>
+                                    </td>
+                                    <td>
+                                        <span class="text"><font style="color: red"></font>Vehicle Type </span>
+                                    </td>
+                                    <td style="padding-left: 3px">
+                                        &nbsp;<asp:DropDownList ID="ddlVehicleType" runat="server" Width="135px" TabIndex="2"
+                                            Font-Names="Arial" Font-Size="11px" BackColor="#F4F4F4">
+                                        </asp:DropDownList>
+                                    </td>
+                                    <td>
+                                        <span class="text"><font style="color: red"></font>Origin Zone </span>
+                                    </td>
+                                    <td>
+                                        <asp:TextBox ID="txtZoneFrom" runat="server" CssClass="TextBox" Width="125" MaxLength="20"
+                                            Style="text-transform: uppercase; font-size: 11px;" TabIndex="3" onkeypress="return NoSpace(event,this)"
+                                            AutoPostBack="false"></asp:TextBox>
+                                        <%--OnTextChanged="txtZoneFrom_OnTextchanged"--%>
+                                        <cc1:AutoCompleteExtender FirstRowSelected="True" ID="aecOrginZone" runat="server"
+                                            CompletionInterval="100" CompletionListCssClass="autocomplete_completionListElement"
+                                            CompletionListHighlightedItemCssClass="autocomplete_highlightedListItem" CompletionListItemCssClass="autocomplete_listItem"
+                                            MinimumPrefixLength="1" ServiceMethod="GetValuesUsingProcedureTransport" ServicePath="~/AutoComplete.asmx"
+                                            TargetControlID="txtZoneFrom" BehaviorID="aecOrginZone" ContextKey="usp_GetValueUsingProcedure ,ACPORTZONEE">
+                                        </cc1:AutoCompleteExtender>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="text"><font style="color: red"></font>Delivery Date From</span>
+                                    </td>
+                                    <td>
+                                        <%--<asp:TextBox ID="txtDeliveryFrom" runat="server" CssClass="TextBox" Width="130" TabIndex="4"
+                                            onkeypress="return false" onkeydown="doCheckBackSpaceAndDelete(this)"></asp:TextBox>
+                                        <asp:ImageButton runat="Server" ID="imgDeliveryFrom" ImageUrl="~/images/dateicon.gif"
+                                            AlternateText="Click to show calendar" Style="margin-left: -20px;" TabIndex="5" />
+                                        <cc1:CalendarExtender ID="calDeliveryFrom" runat="server" TargetControlID="txtDeliveryFrom"
+                                            PopupButtonID="imgDeliveryFrom" CssClass="radcalendar" Format="dd/MMM/yyyy">
+                                        </cc1:CalendarExtender>--%>
+                                        <uc4:DateControl ID="txtFrom" runat="server" TabIndex="4" />
+                                        <asp:HiddenField ID="hdnDelimiter" runat="server" />
+                                        <asp:HiddenField ID="hdnDateFormat" runat="server" />
+                                        <input type="hidden" id="Hidden1" name="htnCalender" />
+                                    </td>
+                                    <td>
+                                        <span class="text"><font style="color: red"></font>Delivery Date To</span>
+                                    </td>
+                                    <td>
+                                        <%-- <asp:TextBox ID="txtDeliveryTo" runat="server" CssClass="TextBox" Width="130" onkeypress="return false"
+                                            onkeydown="doCheckBackSpaceAndDelete(this)" TabIndex="6"></asp:TextBox>
+                                        <asp:ImageButton runat="Server" ID="imgDeliveryTo" ImageUrl="~/images/dateicon.gif"
+                                            AlternateText="Click to show calendar" Style="margin-left: -20px;" TabIndex="7" />
+                                        <cc1:CalendarExtender ID="calDeliveryTo" runat="server" TargetControlID="txtDeliveryTo"
+                                            PopupButtonID="imgDeliveryTo" CssClass="radcalendar" Format="dd/MMM/yyyy">
+                                        </cc1:CalendarExtender>--%>
+                                        <uc4:DateControl ID="txtTo" runat="server" TabIndex="5" />
+                                    </td>
+                                    <td>
+                                        <span class="text"><font style="color: red"></font>Delivery Zone </span>
+                                    </td>
+                                    <td>
+                                        <asp:TextBox ID="txtZoneTo" runat="server" CssClass="TextBox" Width="125" MaxLength="20"
+                                            Style="text-transform: uppercase; font-size: 11px;" TabIndex="8" onkeypress="return NoSpace(event,this)"
+                                            AutoPostBack="false"></asp:TextBox>
+                                        <%--OnTextChanged="txtZoneTo_OnTextchanged"--%>
+                                        <cc1:AutoCompleteExtender FirstRowSelected="True" ID="acedZone" runat="server" CompletionInterval="100"
+                                            CompletionListCssClass="autocomplete_completionListElement" CompletionListHighlightedItemCssClass="autocomplete_highlightedListItem"
+                                            CompletionListItemCssClass="autocomplete_listItem" MinimumPrefixLength="1" ServiceMethod="GetValuesUsingProcedureTransport"
+                                            ServicePath="~/AutoComplete.asmx" TargetControlID="txtZoneTo" BehaviorID="acedZone"
+                                            ContextKey="usp_GetValueUsingProcedure ,ACPORTZONEE">
+                                        </cc1:AutoCompleteExtender>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="text"><font style="color: red"></font>Customer </span>
+                                    </td>
+                                    <td>
+                                        <asp:TextBox ID="txtCustomer" runat="server" CssClass="TextBox" Width="130" MaxLength="20"
+                                            Style="text-transform: uppercase; font-size: 11px;" TabIndex="9" onkeypress="return NoSpace(event,this)"
+                                            AutoPostBack="false"></asp:TextBox>
+                                        <%--OnTextChanged="txtCustomer_OnTextchanged"--%>
+                                        <cc1:AutoCompleteExtender FirstRowSelected="True" ID="acCustomer" runat="server"
+                                            CompletionInterval="100" CompletionListCssClass="autocomplete_completionListElement"
+                                            CompletionListHighlightedItemCssClass="autocomplete_highlightedListItem" CompletionListItemCssClass="autocomplete_listItem"
+                                            MinimumPrefixLength="1" ServiceMethod="GetValuesUsingProcedureTransport" ServicePath="~/AutoComplete.asmx"
+                                            TargetControlID="txtCustomer" BehaviorID="acCustomer" ContextKey="usp_GetValueUsingProcedure ,ACPrincipalName">
+                                        </cc1:AutoCompleteExtender>
+                                    </td>
+                                    <td>
+                                        <span class="text"><font style="color: red"></font>Job Number </span>
+                                    </td>
+                                    <td>
+                                        <asp:TextBox ID="txtJobNumber" runat="server" CssClass="TextBox" Width="130" MaxLength="10"
+                                            Style="text-transform: uppercase; font-size: 11px;" onkeypress="return numbersonly(event)"
+                                            TabIndex="10" AutoPostBack="false"></asp:TextBox>
+                                        <%--OnTextChanged="txtJobNumber_OnTextchanged"--%>
+                                        <cc1:AutoCompleteExtender FirstRowSelected="True" ID="aceJobNumber" runat="server"
+                                            CompletionInterval="100" CompletionListCssClass="autocomplete_completionListElement"
+                                            CompletionListHighlightedItemCssClass="autocomplete_highlightedListItem" CompletionListItemCssClass="autocomplete_listItem"
+                                            MinimumPrefixLength="1" ServiceMethod="GetValuesUsingProcedureTransport" ServicePath="~/AutoComplete.asmx"
+                                            TargetControlID="txtJobNumber" BehaviorID="aceJobNumber" ContextKey="usp_GetValueUsingProcedure ,ACJOBNUMBER">
+                                        </cc1:AutoCompleteExtender>
+                                    </td>
+                                    <td>
+                                    </td>
+                                    <td>
+                                        &nbsp;
+                                        <asp:ImageButton ID="ibtGo" runat="server" ImageUrl="~/images/go_btn.JPG" TabIndex="11"
+                                            OnClick="ibtGo_Click" />
+                                        &nbsp;&nbsp;
+                                        <asp:ImageButton ID="ibtReset" runat="server" ImageUrl="~/Images/RESET.jpg" TabIndex="12"
+                                            OnClick="ibtReset_Click" />
+                                    </td>
+                                    <td>
+                                    </td>
+                                    <td>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </span>
+                </div>
+            </div>
+            <div id="Div2">
+                <div class="outer_forms" style="width: 978px">
+                    <span class="border_forms">
+                        <div class="heading" style="color: #345A96; width: 966px">
+                            <strong class="head_forms" style="color: #345A96;">
+                                <asp:Label ID="lblHeading" runat="server" Text="Manage Transport"></asp:Label></strong>
+                        </div>
+                        <div id="innertabs">
+                            <div id="dvLink" runat="server" align="left">
+                                <div>
+                                </div>
+                            </div>
+                            <div id="head" style="height: 20px;">
+                                <table width="100%">
+                                    <tr>
+                                        <td style="width: 90%">
+                                        </td>
+                                        <td style="width: 10%; padding-right: 25px" align="right">
+                                            <asp:ImageButton ID="imgbtnAdd" runat="server" ImageUrl="~/Images/add_btn.jpg" OnClick="imgbtnAdd_Click"
+                                                TabIndex="14" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div align="center" style="width: 955px; padding-top: 10px; overflow: scroll">
+                            <asp:GridView ID="gvTransportRequest" CssClass="caps" SkinID="grid" Width="150%"
+                                    runat="server" AutoGenerateColumns="False" AllowSorting="True" AllowPaging="true"
+                                    BorderStyle="solid" BackColor="#CCCCCC" EmptyDataText="NO DETAILS FOUND" Style="padding-top: -60;
+                                    border-top: 0px;" OnSorting="gvTransportRequest_Sorting" OnPageIndexChanging="gvTransportRequest_PageIndexChanging"
+                                    PageSize="5" DataKeyNames="TransRequestId" OnRowDataBound="gvTransportRequest_RowDataBound">
+                                    <%--OnRowCommand="gvTransportRequest_RowCommand"
+                                    OnRowEditing="gvTransportRequest_RowEditing"--%>
+                                    <Columns>
+                                        <asp:TemplateField>
+                                            <ItemTemplate>
+                                                <asp:ImageButton ID="lnkEdit" Text="Edit" runat="server" CausesValidation="false"
+                                                    TabIndex="15" ImageUrl="~/Images/update2.jpg" CommandArgument='<%# Eval("TransRequestId") %>'
+                                                    OnClick="lnkEdit_Click"></asp:ImageButton>
+                                                <%--  CommandName="Edit" <asp:Label ID="lblRequestID" Text='<%# Eval("TransRequestId") %>' runat="server" />--%>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField>
+                                            <%--<HeaderTemplate>
+                                                <asp:CheckBox ID="chkheader" runat="server" onclick="SelectAllTR(this);" TabIndex="16" />
+                                            </HeaderTemplate> OnClick="SelectDeSelectHeaderTR(this)"  --%>
+                                            <ItemTemplate>
+                                                <asp:CheckBox ID="chkColumn" runat="server" TabIndex="17" />
+                                                <asp:HiddenField ID="hdnRequestID" Value='<%# Eval("TransRequestId") %>' runat="server" />
+                                            </ItemTemplate>
+                                            <HeaderStyle HorizontalAlign="Center" />
+                                            <ItemStyle HorizontalAlign="Center" />
+                                        </asp:TemplateField>
+                                        <asp:BoundField DataField="SubjobId" HeaderText=" SubJobID " SortExpression="SubjobId"
+                                            ItemStyle-Width="15%" HeaderStyle-ForeColor="Black" Visible="false" ItemStyle-HorizontalAlign="Left" />
+                                        <asp:BoundField DataField="SubJobNumber" Visible="true" HeaderText=" Job No. " SortExpression="SubJobNumber"
+                                            ItemStyle-Width="7%" HeaderStyle-ForeColor="Black" HeaderStyle-HorizontalAlign="Left"
+                                            ItemStyle-HorizontalAlign="Left" />
+                                        <asp:BoundField DataField="Customer" Visible="true" HeaderText=" Customer " SortExpression="Customer"
+                                            ItemStyle-Width="15%" HeaderStyle-ForeColor="Black" HeaderStyle-HorizontalAlign="Left"
+                                            ItemStyle-HorizontalAlign="Left" />
+                                        <%--<asp:BoundField DataField="VType" HeaderText="Voyage Type " SortExpression="VType"
+                                            ItemStyle-Width="10%" HeaderStyle-ForeColor="Black" Visible="true" HeaderStyle-HorizontalAlign="Left"
+                                            ItemStyle-HorizontalAlign="Left" />--%>
+                                        <asp:TemplateField SortExpression="VType" HeaderText="Voyage Type " HeaderStyle-ForeColor="Black">
+                                            <ItemTemplate>
+                                                <asp:Label ID="lblVoyageType" runat="server" Text='<%# Eval("VType") %>'></asp:Label>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:BoundField DataField="RequestType" Visible="true" HeaderText=" Request Type "
+                                            SortExpression="RequestType" ItemStyle-Width="10%" HeaderStyle-ForeColor="Black"
+                                            HeaderStyle-HorizontalAlign="Left" ItemStyle-HorizontalAlign="Left" />
+                                        <asp:BoundField DataField="MaxVolume" Visible="true" HeaderText=" Volume (CBM)" SortExpression="MaxVolume"
+                                            ItemStyle-Width="8%" HeaderStyle-ForeColor="Black" HeaderStyle-HorizontalAlign="Right"
+                                            ItemStyle-HorizontalAlign="Right" />
+                                        <asp:BoundField DataField="Weight" Visible="true" HeaderText=" Weight (KG)" SortExpression="Weight"
+                                            ItemStyle-Width="8%" HeaderStyle-ForeColor="Black" HeaderStyle-HorizontalAlign="Right"
+                                            ItemStyle-HorizontalAlign="Right" />
+                                        <asp:BoundField DataField="OZone" Visible="true" HeaderText=" OZone " SortExpression="OZone"
+                                            ItemStyle-Width="8%" HeaderStyle-ForeColor="Black" HeaderStyle-HorizontalAlign="Left"
+                                            ItemStyle-HorizontalAlign="Left" />
+                                        <asp:BoundField DataField="DZone" Visible="true" HeaderText=" DZone " SortExpression="DZone"
+                                            ItemStyle-Width="10%" HeaderStyle-ForeColor="Black" HeaderStyle-HorizontalAlign="Left"
+                                            ItemStyle-HorizontalAlign="Left" />
+                                        <asp:BoundField DataField="NoOfVehicle" Visible="true" HeaderText=" No.Of Vehicle"
+                                            SortExpression="NoOfVehicle" ItemStyle-Width="10%" HeaderStyle-ForeColor="Black"
+                                            HeaderStyle-HorizontalAlign="Left" ItemStyle-HorizontalAlign="Right" />
+                                        <asp:TemplateField HeaderText="Standard" SortExpression="IsStandard" ItemStyle-Width="10%"
+                                            ItemStyle-HorizontalAlign="Center" HeaderStyle-ForeColor="Black">
+                                            <ItemTemplate>
+                                                <asp:CheckBox ID="chkStandard" runat="server" Checked='<%# Eval("IsStandard").ToString().Equals("True")%>'
+                                                    Enabled="false" TabIndex="18" />
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField HeaderText="Stackable" SortExpression="IsStackable" ItemStyle-Width="10%"
+                                            ItemStyle-HorizontalAlign="Center" HeaderStyle-ForeColor="Black">
+                                            <ItemTemplate>
+                                                <asp:CheckBox ID="chkStackable" runat="server" Checked='<%# Eval("IsStackable").ToString().Equals("True")%>'
+                                                    Enabled="false" TabIndex="19" />
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField HeaderText="SpecialHandling" SortExpression="IsSpecialHandlingReq"
+                                            ItemStyle-Width="15%" ItemStyle-HorizontalAlign="Center" HeaderStyle-ForeColor="Black">
+                                            <ItemTemplate>
+                                                <asp:CheckBox ID="chkSpecialHandling" runat="server" Checked='<%# Eval("IsSpecialHandlingReq").ToString().Equals("True")%>'
+                                                    Enabled="false" TabIndex="20" />
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField HeaderText="Labour" SortExpression="IsLabourReq" ItemStyle-Width="10%"
+                                            ItemStyle-HorizontalAlign="Center" HeaderStyle-ForeColor="Black">
+                                            <ItemTemplate>
+                                                <asp:CheckBox ID="chkLabourReq" runat="server" Checked='<%# Eval("IsLabourReq").ToString().Equals("True")%>'
+                                                    Enabled="false" TabIndex="21" />
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:BoundField DataField="ContainerNo" Visible="true" HeaderText=" ContainerNo "
+                                            SortExpression="ContainerNo" ItemStyle-Width="8%" HeaderStyle-ForeColor="Black"
+                                            HeaderStyle-HorizontalAlign="Left" ItemStyle-HorizontalAlign="Left" />
+                                        <asp:BoundField DataField="VehicleType" Visible="true" HeaderText=" VehicleType "
+                                            SortExpression="VehicleType" ItemStyle-Width="8%" HeaderStyle-ForeColor="Black"
+                                            HeaderStyle-HorizontalAlign="Left" ItemStyle-HorizontalAlign="Left" />
+                                        <asp:BoundField DataField="TransRequestId" HeaderText=" TransRequestId " SortExpression="TransRequestId"
+                                            ItemStyle-Width="15%" HeaderStyle-ForeColor="Black" Visible="true" HeaderStyle-HorizontalAlign="Left"
+                                            ItemStyle-HorizontalAlign="Left" />
+                                        <asp:BoundField DataField="DeliveryAddress" HeaderText=" DeliveryAddress " SortExpression="DeliveryAddress"
+                                            ItemStyle-Width="15%" HeaderStyle-ForeColor="Black" Visible="true" HeaderStyle-HorizontalAlign="Left"
+                                            ItemStyle-HorizontalAlign="Left" />
+                                        <asp:BoundField DataField="PhoneNo" HeaderText=" PhoneNo " SortExpression="PhoneNo"
+                                            ItemStyle-Width="15%" HeaderStyle-ForeColor="Black" Visible="true" HeaderStyle-HorizontalAlign="Left"
+                                            ItemStyle-HorizontalAlign="Left" />
+                                        <asp:BoundField DataField="MobileNo" HeaderText=" MobileNo " SortExpression="MobileNo"
+                                            ItemStyle-Width="20%" HeaderStyle-ForeColor="Black" Visible="true" HeaderStyle-HorizontalAlign="Left"
+                                            ItemStyle-HorizontalAlign="Left" />
+                                        <asp:BoundField DataField="CreatedDate" HeaderText=" CreatedDate " SortExpression="CreatedDate"
+                                            ItemStyle-Width="15%" HeaderStyle-ForeColor="Black" Visible="true" HeaderStyle-HorizontalAlign="Left"
+                                            ItemStyle-HorizontalAlign="Left" />
+                                        <asp:BoundField DataField="DeliveryDate" HeaderText=" Delivery Date " SortExpression="DeliveryDate"
+                                            ItemStyle-Width="15%" HeaderStyle-ForeColor="Black" Visible="true" HeaderStyle-HorizontalAlign="Left"
+                                            ItemStyle-HorizontalAlign="Left" />
+                                    </Columns>
+                                    <HeaderStyle BackColor="#E5E5E5" CssClass="GridHeader" />
+                                    <AlternatingRowStyle CssClass="AltGridRow" />
+                                    <RowStyle CssClass="GridRow" />
+                                    <FooterStyle BackColor="#E5E5E5" />
+                                    <PagerStyle BackColor="#cccccc" ForeColor="Black" />
+                                </asp:GridView>
+                            </div>
+                            <div class="clr">
+                            </div>
+                            <div id="divCustomerMasterPage" runat="server" style="padding-left: 280px; padding-bottom: 10px">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <div style="height: 25px">
+                                            </div>
+                                            <div style="float: left; padding-left: 100px; display: inline; height: 50px; width: 150px;">
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <uc3:GoToPage ID="gtpPage" runat="server" OnddlSelectedIndexChanged="gtpPage_SelectedIndexChanged"
+                                                TabIndex="22" />
+                                        </td>
+                                        <td>
+                                            <asp:ImageButton runat="server" ID="ibtTransportGo" CausesValidation="False" OnClick="ibtPageGo_Click"
+                                                TabIndex="28" ImageUrl="~/images/go_btn.jpg" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="clr">
+                            </div>
+                            <div id="divAllocate" style="height: 20px;" runat="server">
+                                <table width="100%">
+                                    <tr>
+                                        <td style="width: 90%">
+                                            Allocate to Load
+                                        </td>
+                                        <td style="width: 10%; padding-right: 25px" align="right">
+                                            <asp:Button ID="btnAllocate" runat="server" Text="Allocate" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div align="center" style="width: 955px; padding-top: 10px; overflow: scroll" runat="server"
+                                id="divGridAllocate">
+                                <asp:GridView ID="gvAllocate" CssClass="caps" SkinID="grid" Width="150%" runat="server"
+                                    AutoGenerateColumns="False" AllowSorting="True" AllowPaging="true" EmptyDataText="NO DETAILS FOUND"
+                                    Style="padding-top: -60; border-top: 0px;" OnSorting="gvAllocate_Sorting" OnPageIndexChanging="gvAllocate_PageIndexChanging"
+                                    PageSize="15" DataKeyNames="TransRequestId">
+                                    <Columns>
+                                        <asp:TemplateField>
+                                            <ItemTemplate>
+                                                <asp:ImageButton ID="btn_Adel" Text="Edit" runat="server" ImageUrl="~/Images/deleteIcon2.png.jpeg"
+                                                    TabIndex="24" OnClick="btn_Adel_Click" OnClientClick="return confirm('Are you sure want to delete?');">
+                                                </asp:ImageButton>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:BoundField DataField="SubjobId" HeaderText=" SubJobID " SortExpression="SubjobId"
+                                            ItemStyle-Width="15%" HeaderStyle-ForeColor="Black" Visible="false" />
+                                        <asp:BoundField DataField="SubJobNumber" Visible="true" HeaderText=" Job No. " SortExpression="SubJobNumber"
+                                            ItemStyle-Width="7%" HeaderStyle-ForeColor="Black" />
+                                        <asp:BoundField DataField="Customer" Visible="true" HeaderText=" Customer " SortExpression="Customer"
+                                            ItemStyle-Width="15%" HeaderStyle-ForeColor="Black" />
+                                        <asp:BoundField DataField="RequestType" Visible="true" HeaderText=" Request Type "
+                                            SortExpression="RequestType" ItemStyle-Width="10%" HeaderStyle-ForeColor="Black" />
+                                        <asp:BoundField DataField="MaxVolume" Visible="true" HeaderText=" Volume " SortExpression="MaxVolume"
+                                            ItemStyle-Width="8%" HeaderStyle-ForeColor="Black" />
+                                        <asp:BoundField DataField="Weight" Visible="true" HeaderText=" Weight " SortExpression="Weight"
+                                            ItemStyle-Width="8%" HeaderStyle-ForeColor="Black" />
+                                        <asp:BoundField DataField="OZone" Visible="true" HeaderText=" OZone " SortExpression="OZone"
+                                            ItemStyle-Width="8%" HeaderStyle-ForeColor="Black" />
+                                        <asp:BoundField DataField="DZone" Visible="true" HeaderText=" DZone " SortExpression="DZone"
+                                            ItemStyle-Width="10%" HeaderStyle-ForeColor="Black" />
+                                        <asp:BoundField DataField="NoOfVehicle" Visible="true" HeaderText="No.Of Vehicle "
+                                            SortExpression="NoOfVehicle" ItemStyle-Width="10%" HeaderStyle-ForeColor="Black" />
+                                        <asp:TemplateField HeaderText="Standard" SortExpression="IsStandard" ItemStyle-Width="10%"
+                                            ItemStyle-HorizontalAlign="Center" HeaderStyle-ForeColor="Black">
+                                            <ItemTemplate>
+                                                <asp:CheckBox ID="chkStandard" runat="server" Checked='<%# Eval("IsStandard").ToString().Equals("True")%>'
+                                                    Enabled="false" TabIndex="25" />
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField HeaderText="Stackable" SortExpression="IsStackable" ItemStyle-Width="10%"
+                                            ItemStyle-HorizontalAlign="Center" HeaderStyle-ForeColor="Black">
+                                            <ItemTemplate>
+                                                <asp:CheckBox ID="chkStackable" runat="server" Checked='<%# Eval("IsStackable").ToString().Equals("True")%>'
+                                                    Enabled="false" TabIndex="26" />
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField HeaderText="SpecialHandling" SortExpression="IsSpecialHandlingReq"
+                                            ItemStyle-Width="15%" ItemStyle-HorizontalAlign="Center" HeaderStyle-ForeColor="Black">
+                                            <ItemTemplate>
+                                                <asp:CheckBox ID="chkSpecialHandling" runat="server" Checked='<%# Eval("IsSpecialHandlingReq").ToString().Equals("True")%>'
+                                                    Enabled="false" TabIndex="27" />
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField HeaderText="Labour" SortExpression="IsLabourReq" ItemStyle-Width="15%"
+                                            ItemStyle-HorizontalAlign="Center" HeaderStyle-ForeColor="Black">
+                                            <ItemTemplate>
+                                                <asp:CheckBox ID="chkLabourReq" runat="server" Checked='<%# Eval("IsLabourReq").ToString().Equals("True")%>'
+                                                    Enabled="false" TabIndex="28" />
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:BoundField DataField="ContainerNo" Visible="true" HeaderText=" ContainerNo "
+                                            SortExpression="ContainerNo" ItemStyle-Width="8%" HeaderStyle-ForeColor="Black" />
+                                        <asp:BoundField DataField="VehicleType" Visible="true" HeaderText=" VehicleType "
+                                            SortExpression="VehicleType" ItemStyle-Width="8%" HeaderStyle-ForeColor="Black" />
+                                        <asp:BoundField DataField="TransRequestId" HeaderText=" TransRequestId " SortExpression="TransRequestId"
+                                            ItemStyle-Width="15%" HeaderStyle-ForeColor="Black" Visible="true" />
+                                        <asp:BoundField DataField="DeliveryAddress" HeaderText=" DeliveryAddress " SortExpression="DeliveryAddress"
+                                            ItemStyle-Width="15%" HeaderStyle-ForeColor="Black" Visible="true" />
+                                        <asp:BoundField DataField="PhoneNo" HeaderText=" PhoneNo " SortExpression="PhoneNo"
+                                            ItemStyle-Width="15%" HeaderStyle-ForeColor="Black" Visible="true" />
+                                        <asp:BoundField DataField="MobileNo" HeaderText=" MobileNo " SortExpression="MobileNo"
+                                            ItemStyle-Width="15%" HeaderStyle-ForeColor="Black" Visible="true" />
+                                        <asp:BoundField DataField="CreatedDate" HeaderText=" CreatedDate " SortExpression="CreatedDate"
+                                            ItemStyle-Width="15%" HeaderStyle-ForeColor="Black" Visible="true" />
+                                        <asp:BoundField DataField="DeliveryDate" HeaderText=" Delivery Date " SortExpression="DeliveryDate"
+                                            ItemStyle-Width="15%" HeaderStyle-ForeColor="Black" Visible="true" />
+                                    </Columns>
+                                    <HeaderStyle BackColor="#E5E5E5" CssClass="GridHeader" />
+                                    <AlternatingRowStyle CssClass="AltGridRow" />
+                                    <RowStyle CssClass="GridRow" />
+                                    <FooterStyle BackColor="#E5E5E5" />
+                                </asp:GridView>
+                            </div>
+                            <div style="background-color: #E5E5E5" id="divAllocateA" runat="server">
+                                <table>
+                                    <tr>
+                                        <td style="padding-left: 310px;">
+                                            <asp:Label ID="lblCompoundVolume" runat="server"></asp:Label>
+                                        </td>
+                                        <td style="padding-left: 350px;">
+                                            <asp:Button ID="btnAllocateG" runat="server" Text="Allocate" OnClick="btnAllocateG_Click"
+                                                TabIndex="29" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="clr">
+                            </div>
+                            <div id="divCutomAllocation" runat="server" style="padding-left: 200px; padding-bottom: 10px"
+                                visible="false">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <div style="height: 25px">
+                                            </div>
+                                            <div style="float: left; padding-left: 100px; display: inline; height: 50px; width: 150px;">
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <uc3:GoToPage ID="gtpAllocation" runat="server" OnddlSelectedIndexChanged="gtpPage_SelectedIndexChanged"
+                                                TabIndex="30" />
+                                        </td>
+                                        <td>
+                                            <asp:ImageButton runat="server" ID="imgbtnAllocation" CausesValidation="False" OnClick="ibtPageGo_Click"
+                                                ImageUrl="~/images/go_btn.jpg" TabIndex="28" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                </div>
+                </span>
+            </div>
+        </ContentTemplate>
+    </asp:UpdatePanel>
+    <script language="javascript" type="text/javascript">
+
+        // No Text is allowed
+        function NoText(evt) {
+            return false;
+        }
+
+
+        // UnCheck the header Check box if child one unchecked
+
+        function SelectDeSelectHeaderTR(CheckBox) {
+
+            var TargetBaseControl = document.getElementById('MainContent_gvTransportRequest');
+            var TargetChildControl = "chkColumn";
+            var TargetHeaderControl = "chkheader";
+            var Inputs = TargetBaseControl.getElementsByTagName("input");
+            var flag = false;
+            var HeaderCheckBox;
+            for (var iCount = 0; iCount < Inputs.length; ++iCount) {
+                if (Inputs[iCount].type == 'checkbox' && Inputs[iCount].id.indexOf(TargetHeaderControl, 0) >= 0)
+                    HeaderCheckBox = Inputs[iCount];
+                if (Inputs[iCount] != CheckBox && Inputs[iCount].type == 'checkbox' && Inputs[iCount].id.indexOf(TargetChildControl, 0) >= 0 && Inputs[iCount].id.indexOf(TargetHeaderControl, 0) == -1) {
+                    if (CheckBox.checked) {
+                        if (!Inputs[iCount].checked) {
+                            flag = false;
+                            HeaderCheckBox.checked = false;
+                            return;
+                        }
+                        else
+                            flag = true;
+                    }
+                    else if (!CheckBox.checked)
+                        HeaderCheckBox.checked = false;
+                }
+            }
+            if (flag)
+                HeaderCheckBox.checked = CheckBox.checked
+        }
+
+        // Check All Check box
+
+        function SelectAllTR(CheckBox) {
+            var TargetBaseControl = document.getElementById('MainContent_gvTransportRequest');
+            var TargetChildControl = "chkColumn";
+            var Inputs = TargetBaseControl.getElementsByTagName("input");
+            for (var iCount = 0; iCount < Inputs.length; ++iCount) {
+                if (Inputs[iCount].type == 'checkbox' && Inputs[iCount].id.indexOf(TargetChildControl, 0) >= 0)
+                    Inputs[iCount].checked = CheckBox.checked;
+            }
+        }
+
+
+
+        function number_only(e) {
+            var keycode
+            if (window.event) keycode = window.event.keyCode
+            else if (e) keycode = e.which
+            else return true
+            var selection = document.selection.createRange()
+            var selected_text = selection.text
+            if (keycode == 48 && ((e.value).length == 0 || selected_text != "")) {
+                return false
+            }
+            if (!(keycode >= 48 && keycode <= 57) && (keycode != 13)) {
+                return false
+            }
+            else return true
+        }
+
+        function numbersonly(e) {
+            var unicode = e.charCode ? e.charCode : e.keyCode
+            if (unicode != 8) {
+                if (unicode < 45 || unicode > 57)
+                    return false
+            }
+        }
+
+
+        function doCheckBackSpaceAndDelete(v) {
+            var keyCode = (event.which) ? event.which : event.keyCode
+            if ((keyCode == 8) || (keyCode == 46))
+                event.returnValue = false
+            if (keyCode == 46) {
+                document.getElementById(v.id).value = ''
+            }
+        }
+
+        function NoSpace(event, txt) {
+
+            if (event.keyCode == 32 && txt.value.length <= 0)
+                return false;
+            else
+                return true;
+        }
+
+    </script>
+</asp:Content>
